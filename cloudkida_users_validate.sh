@@ -276,7 +276,8 @@ if check_user dave; then
 
     # ./dave_passwd.sh  # Uncomment if needed
     if check_password dave "Dave@QA1"; then
-        test1_obtained_marks=$((test1_obtained_marks + 5))  # Add marks if password is correct
+	echo "Yes"
+        test4_obtained_marks=$((test4_obtained_marks + 5))  # Add marks if password is correct
     else
         failed_properties+=("Password")
     fi
@@ -293,7 +294,7 @@ else
     test4_message="User 4 does not exist"
 fi
 
-results=$(echo "$results" | jq ".tasks += [{\"no\": 4, \"name\": \"User 4\", \"obtained_marks\": $test4_obtained_marks, \"maximum_marks\": 15, \"message\": \"$test4_message\"}]")
+results=$(echo "$results" | jq ".tasks += [{\"no\": 4, \"name\": \"User 4\", \"obtained_marks\": $test4_obtained_marks, \"maximum_marks\": 20, \"message\": \"$test4_message\"}]")
 results=$(echo "$results" | jq ".obtained_maximum_marks += $test4_obtained_marks")
 
 
@@ -321,7 +322,7 @@ if check_user eve; then
 
     # ./eve_passwd.sh  # Uncomment if needed
     if check_password eve "Sport@123"; then
-        test1_obtained_marks=$((test1_obtained_marks + 5))  # Add marks if password is correct
+        test5_obtained_marks=$((test5_obtained_marks + 5))  # Add marks if password is correct
     else
         failed_properties+=("Password")
     fi
