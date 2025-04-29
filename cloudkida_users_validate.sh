@@ -53,7 +53,7 @@ check_shell() {
 check_expiry() {
     username=$1
     expected_days=$2
-    expiry=$(chage -l "$username" | grep "Account expires" | cut -d: -f2 | xargs)
+    expiry=$(sudo chage -l "$username" | grep "Account expires" | cut -d: -f2 | xargs)
     expected_date=$(date -d "+$expected_days days" +"%b %d, %Y")
     [[ "$expiry" == "$expected_date" ]]
 }
@@ -68,7 +68,7 @@ check_comment(){
 
 check_locked() {
     username=$1
-    status=$(passwd -S "$username" | awk '{print $2}')
+    status=$(sudo passwd -S "$username" | awk '{print $2}')
     [[ "$status" == "L" || "$status" == "LK" ]]
 }
 
@@ -79,9 +79,9 @@ check_chage_policy() {
     max_days=$2
     inactive_days=$3
 
-    actual_max=$(chage -l "$username" | grep "Maximum" | awk -F: '{print $2}' | xargs)
-    expiry_date=$(chage -l "$username" | grep "Password expires" | awk -F: '{print $2}' | xargs)
-    inactive_date=$(chage -l "$username" | grep "inactive" | awk -F: '{print $2}' | xargs)
+    actual_max=$(sudo chage -l "$username" | grep "Maximum" | awk -F: '{print $2}' | xargs)
+    expiry_date=$(sudo chage -l "$username" | grep "Password expires" | awk -F: '{print $2}' | xargs)
+    inactive_date=$(sudo chage -l "$username" | grep "inactive" | awk -F: '{print $2}' | xargs)
 
     expiry_epoch=$(date -d "$expiry_date" +%s)
     inactive_epoch=$(date -d "$inactive_date" +%s)
@@ -96,7 +96,7 @@ check_chage_policy() {
 check_group() {
     username=$1
     group=$2
-    id -nG "$username" | grep -qw "$group"
+    sudo id -nG "$username" | grep -qw "$group"
 }
 
 
@@ -274,10 +274,10 @@ if check_user dave; then
         failed_properties+=("Chage Policy")
     fi
 
-    # ./dave_passwd.sh  # Uncomment if needed
+    
     if check_password dave "Dave@QA1"; then
-	echo "Yes"
-        test4_obtained_marks=$((test4_obtained_marks + 5))  # Add marks if password is correct
+	
+        test4_obtained_marks=$((test4_obtained_marks + 5))
     else
         failed_properties+=("Password")
     fi
@@ -320,9 +320,9 @@ if check_user eve; then
         failed_properties+=("Group")
     fi
 
-    # ./eve_passwd.sh  # Uncomment if needed
+    
     if check_password eve "Sport@123"; then
-        test5_obtained_marks=$((test5_obtained_marks + 5))  # Add marks if password is correct
+        test5_obtained_marks=$((test5_obtained_marks + 5))
     else
         failed_properties+=("Password")
     fi
@@ -346,4 +346,3 @@ results=$(echo "$results" | jq ".obtained_maximum_marks += $test5_obtained_marks
 
 
 echo "$results" | jq
-
