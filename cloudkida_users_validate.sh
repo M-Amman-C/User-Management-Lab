@@ -3,6 +3,8 @@
 # Functions
 results="{\"maximum_marks\": 100, \"obtained_maximum_marks\": 0, \"tasks\": []}"
 
+apt-get update
+
 if ! command -v jq &> /dev/null; then
     echo "jq not found, installing..."
     sudo apt install -y jq
