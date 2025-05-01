@@ -1,18 +1,20 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+  exec sudo "$0" "$@"
+fi
+
 # Functions
 results="{\"maximum_marks\": 100, \"obtained_maximum_marks\": 0, \"tasks\": []}"
 
-apt-get update
+sudo apt-get update &>/dev/null
 
 if ! command -v jq &> /dev/null; then
-    echo "jq not found, installing..."
-    sudo apt install -y jq
+    sudo apt install -y jq &> /dev/null
 fi
 
 if ! command -v sshpass &> /dev/null; then
-    echo "sshpass not found, installing..."
-    sudo apt install -y sshpass
+    sudo apt install -y sshpass &> /dev/null
 fi
 
 check_user() {
@@ -108,7 +110,7 @@ check_password() {
     local result
 
     # Try to authenticate using sshpass (which can automate the password entry in SSH)
-    result=$( sshpass -p $expected_password ssh -o StrictHostKeyChecking=no $username@localhost exit 2>&1)
+    result=$( sshpass -p $expected_password ssh -o StrictHostKeyChecking=no $username@localhost exit &>/dev/null)
 
     echo $result
     # Check the result for success or failure
